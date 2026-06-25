@@ -17,7 +17,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton("👊 Пинать Балду", callback_data="punch")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    text = f"Привет, {name}! 👋\nЯ Балда, пни меня, чтобы зарабатывать деньги."
+    text = f"Привет, {name}! 👋\n\nЯ Балда, пни меня, чтобы зарабатывать деньги."
 
     await update.message.reply_text(text, reply_markup=reply_markup)
 
@@ -42,7 +42,7 @@ async def more(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Убираем кнопки, оставляем только текст
     text = (
         "🚚 *Заработок на курьерах*\n\n"
-        "Яндекс платит 31200 рублей за каждого курьера, который пришел и работает по твоей ссылке.\n"
+        "Яндекс платит до 31200 рублей за каждого курьера, который пришел и работает по твоей ссылке.\n"
         "Ссылку дает сам Яндекс через партнерский кабинет (реф.ссылка).\n\n"
         "Мы создаем и размещаем контент в рилсах и ставим реф.ссылку в шапку профиля.\n\n"
         "Это все бесплатно, но ты должен быть самозанятым или ИП"

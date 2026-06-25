@@ -1,5 +1,5 @@
 import os
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, BotCommand
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 
 # --- ТОКЕН ---
@@ -13,7 +13,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     name = user.first_name
 
-    # Кнопка "Пинать Балду"
     keyboard = [[InlineKeyboardButton("👊 Пинать Балду", callback_data="punch")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -26,7 +25,6 @@ async def punch(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    # Кнопка "Подробнее"
     keyboard = [[InlineKeyboardButton("📖 Подробнее", callback_data="more")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
@@ -39,7 +37,6 @@ async def more(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    # Убираем кнопки, оставляем только текст
     text = (
         "🚚 *Заработок на курьерах*\n\n"
         "Яндекс платит до 31200 рублей за каждого курьера, который пришел и работает по твоей ссылке.\n"
@@ -50,14 +47,49 @@ async def more(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_text(text, parse_mode="Markdown")
 
+# --- НОВАЯ КОМАНДА /about (О проекте) ---
+async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = (
+        "🤖 *О проекте «Балда»*\n\n"
+        "Балда — это цифровой помощник для заработка на курьерских доставках.\n\n"
+        "📌 *Как это работает:*\n"
+        "1. Ты регистрируешься в сервисах доставки (Яндекс Еда, Ozon, Delivery Club)\n"
+        "2. Балда даёт тебе промты для генерации контента\n"
+        "3. Ты выкладываешь фото/видео и получаешь заказы\n\n"
+        "💡 *Концепция:*\n"
+        "Балда — это персонаж из сказки Пушкина, который стал наставником для тех, "
+        "кто хочет зарабатывать без сложных схем.\n\n"
+        "© Алексей Терентьев, 2026\n"
+        "Понятие «ИИнформационная безопасность»\n\n"
+        "Напиши /start, чтобы начать зарабатывать."
+    )
+
+    await update.message.reply_text(text, parse_mode="Markdown")
+
+# --- НАСТРОЙКА МЕНЮ ВНИЗУ (постоянные кнопки) ---
+async def set_commands(app):
+    commands = [
+        BotCommand("start", "Главное меню"),
+        BotCommand("about", "О проекте"),
+    ]
+    await app.bot.set_my_commands(commands)
+
 # --- ЗАПУСК ---
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
+
+    # Команды
     app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("about", about))
+
+    # Кнопки (callback)
     app.add_handler(CallbackQueryHandler(punch, pattern="punch"))
     app.add_handler(CallbackQueryHandler(more, pattern="more"))
 
-    print("✅ Бот Балда v2.0 запущен!")
+    # Устанавливаем меню с кнопками при старте
+    app.post_init = set_commands
+
+    print("✅ Бот Балда v2.1 запущен!")
     app.run_polling()
 
 if __name__ == "__main__":

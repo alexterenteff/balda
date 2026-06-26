@@ -16,7 +16,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton("👊 Пинать Балду", callback_data="punch")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    text = f"Привет, {name}! 👋\n\nЯ Балда, пни меня, чтобы зарабатывать деньги."
+    text = f"Привет, Хозяин! 👋\n\nЯ Балда. Я не обещаю лёгких денег. Я показываю, куда идти, чтобы заработать. Пни меня."
 
     await update.message.reply_text(text, reply_markup=reply_markup)
 

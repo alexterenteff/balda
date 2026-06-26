@@ -16,7 +16,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton("👊 Пинать Балду", callback_data="punch")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    text = f"Привет, Хозяин! 👋\n\nЯ Балда. Я не обещаю лёгких денег. Я показываю, куда идти, чтобы заработать. Пни меня."
+    text = f"Привет, Хозяин! 👋\n\nЯ Балда. Пни меня, чтобы начать зарабатывать."
 
     await update.message.reply_text(text, reply_markup=reply_markup)
 
@@ -28,7 +28,7 @@ async def punch(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [[InlineKeyboardButton("📖 Подробнее", callback_data="more")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
-    text = "💰 Заработок на курьерах"
+    text = "💰 Заработок на курьерах. Получаем от Яндекса до 31200 рублей за каждого курьера, которого ты приведешь."
 
     await query.edit_message_text(text, reply_markup=reply_markup)
 
@@ -40,8 +40,8 @@ async def more(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = (
         "🚚 *Заработок на курьерах*\n\n"
         "Яндекс платит до 31200 рублей за каждого курьера, который пришел и работает по твоей ссылке.\n"
-        "Ссылку дает сам Яндекс через партнерский кабинет (реф.ссылка).\n\n"
-        "Мы создаем и размещаем контент в рилсах и ставим реф.ссылку в шапку профиля.\n\n"
+        "Ты регаешь в партнерке Яндекса, открываешь новый профиль в инстаграм и публикуешь рилсы.\n\n"
+        "Просмотр рилсов - переход в аккаунт - переход по ссылке в профиле - регистрация курьера\n\n"
         "Это все бесплатно, но ты должен быть самозанятым или ИП"
     )
 

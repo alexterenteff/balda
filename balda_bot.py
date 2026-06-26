@@ -58,7 +58,6 @@ async def to_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    # ТРИ КНОПКИ
     keyboard = [
         [InlineKeyboardButton("⚙️ Настройка Инстаграм", callback_data="setup_instagram")],
         [InlineKeyboardButton("🤖 Промты для ИИ", callback_data="prompts")],
@@ -75,13 +74,15 @@ async def to_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_text(text, parse_mode="Markdown", reply_markup=reply_markup)
 
-# --- НОВАЯ ФУНКЦИЯ: НАСТРОЙКА ИНСТАГРАМ ---
+# --- НАСТРОЙКА ИНСТАГРАМ ---
 async def setup_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    # Кнопка "Вернуться в Инстаграм"
-    keyboard = [[InlineKeyboardButton("🔙 Назад в Инстаграм", callback_data="to_instagram")]]
+    keyboard = [
+        [InlineKeyboardButton("✅ Все сделал по инструкции", callback_data="all_done")],
+        [InlineKeyboardButton("🔙 Назад в Инстаграм", callback_data="to_instagram")],
+    ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     text = (
@@ -92,16 +93,37 @@ async def setup_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "2️⃣ *Фото профиля*\n"
         "Загрузи аватарку. Подойдёт нейтральное или курьерское фото.\n\n"
         "3️⃣ *Имя профиля*\n"
-        "Укажи имя, связанное с доставкой (например: \n«Доставка [Твой город]»).\n\n"
+        "Укажи имя, связанное с доставкой (например: «Доставка [Твой город]»).\n\n"
         "4️⃣ *Био (описание)*\n"
         "Напиши краткое описание. Пример:\n"
         "`📦 Доставка в [Твой город] без выходных.\n"
-        "✅ После настройки возвращайся и бери промты."
+        "💸 Промокод: BALDA на скидку 20% на первый заказ.\n"
+        "⬇️ Заказы тут: ссылка в шапке`\n\n"
+        "✅ Когда всё сделаешь — нажми кнопку внизу."
     )
 
     await query.edit_message_text(text, parse_mode="Markdown", reply_markup=reply_markup)
 
-# --- ФУНКЦИЯ: ПРОМТЫ ДЛЯ ИИ ---
+# --- ФИНАЛЬНЫЙ ЭКРАН: "ВСЕ СДЕЛАЛ" ---
+async def all_done(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    # Кнопка "Вернуться в меню"
+    keyboard = [[InlineKeyboardButton("🏠 Вернуться в меню", callback_data="to_start")]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    text = (
+        "🎉 *Ты только что создал вероятность заработка!*\n\n"
+        "Если кто-то посмотрит рилс, зайдет по ссылке и выйдет работать курьером, "
+        "ты получишь до *31 000 рублей*.\n\n"
+        "💰 И да, я *никакой оплаты не беру*. Всё твое.\n\n"
+        "Удачи, Хозяин! 🚀"
+    )
+
+    await query.edit_message_text(text, parse_mode="Markdown", reply_markup=reply_markup)
+
+# --- ПРОМТЫ ДЛЯ ИИ ---
 async def prompts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -170,12 +192,13 @@ def main():
     app.add_handler(CallbackQueryHandler(more, pattern="more"))
     app.add_handler(CallbackQueryHandler(to_instagram, pattern="to_instagram"))
     app.add_handler(CallbackQueryHandler(setup_instagram, pattern="setup_instagram"))
+    app.add_handler(CallbackQueryHandler(all_done, pattern="all_done"))  # НОВЫЙ ОБРАБОТЧИК
     app.add_handler(CallbackQueryHandler(prompts, pattern="prompts"))
     app.add_handler(CallbackQueryHandler(to_start, pattern="to_start"))
 
     app.post_init = set_commands
 
-    print("✅ Бот Балда v2.4 запущен!")
+    print("✅ Бот Балда v2.5 запущен!")
     app.run_polling()
 
 if __name__ == "__main__":

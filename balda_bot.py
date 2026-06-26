@@ -11,7 +11,7 @@ if not BOT_TOKEN:
 # --- КОМАНДА /start ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    name = user.first_name
+    name = "Хозяин"
 
     keyboard = [[InlineKeyboardButton("👊 Пинать Балду", callback_data="punch")]]
     reply_markup = InlineKeyboardMarkup(keyboard)

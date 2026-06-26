@@ -60,7 +60,7 @@ async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "Балда — это персонаж из сказки Пушкина, который стал наставником для тех, "
         "кто хочет зарабатывать без сложных схем.\n\n"
         "© Алексей Терентьев, 2026\n"
-        "@agterentev»\n\n"
+        "@agterentev\n\n"
         "Напиши /start, чтобы начать зарабатывать."
     )
 

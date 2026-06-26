@@ -53,13 +53,14 @@ async def more(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_text(text, parse_mode="Markdown", reply_markup=reply_markup)
 
-# --- КОГДА НАЖАЛИ "Жми сюда после регистрации" ---
+# --- КОГДА НАЖАЛИ "Жми сюда после регистрации" (ЭКРАН ИНСТАГРАМ) ---
 async def to_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    # ДВЕ КНОПКИ: Промты и Вернуться
+    # ТРИ КНОПКИ
     keyboard = [
+        [InlineKeyboardButton("⚙️ Настройка Инстаграм", callback_data="setup_instagram")],
         [InlineKeyboardButton("🤖 Промты для ИИ", callback_data="prompts")],
         [InlineKeyboardButton("🏠 Вернуться в меню", callback_data="to_start")],
     ]
@@ -74,12 +75,40 @@ async def to_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_text(text, parse_mode="Markdown", reply_markup=reply_markup)
 
-# --- НОВАЯ ФУНКЦИЯ: ПРОМТЫ ДЛЯ ИИ ---
+# --- НОВАЯ ФУНКЦИЯ: НАСТРОЙКА ИНСТАГРАМ ---
+async def setup_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    # Кнопка "Вернуться в Инстаграм"
+    keyboard = [[InlineKeyboardButton("🔙 Назад в Инстаграм", callback_data="to_instagram")]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    text = (
+        "⚙️ *Настройка Инстаграм*\n\n"
+        "Выполни эти шаги, чтобы подготовить профиль:\n\n"
+        "1️⃣ *Реф.ссылка*\n"
+        "Добавь ссылку, полученную от Яндекс Партнёрки, в шапку профиля (поле «Веб-сайт»).\n\n"
+        "2️⃣ *Фото профиля*\n"
+        "Загрузи аватарку. Подойдёт нейтральное или курьерское фото.\n\n"
+        "3️⃣ *Имя профиля*\n"
+        "Укажи имя, связанное с доставкой (например: \n«Доставка [Твой город]»).\n\n"
+        "4️⃣ *Био (описание)*\n"
+        "Напиши краткое описание. Пример:\n"
+        "`📦 Доставка в [Твой город] без выходных.\n"
+        "💸 Промокод: BALDA на скидку 20% на первый заказ.\n"
+        "⬇️ Заказы тут: ссылка в шапке`\n\n"
+        "✅ После настройки возвращайся и бери промты."
+    )
+
+    await query.edit_message_text(text, parse_mode="Markdown", reply_markup=reply_markup)
+
+# --- ФУНКЦИЯ: ПРОМТЫ ДЛЯ ИИ ---
 async def prompts(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    keyboard = [[InlineKeyboardButton("🏠 Вернуться в меню", callback_data="to_start")]]
+    keyboard = [[InlineKeyboardButton("🔙 Назад в Инстаграм", callback_data="to_instagram")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     text = (
@@ -124,7 +153,7 @@ async def about(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(text, parse_mode="Markdown")
 
-# --- НАСТРОЙКА МЕНЮ ВНИЗУ (постоянные кнопки) ---
+# --- НАСТРОЙКА МЕНЮ ВНИЗУ ---
 async def set_commands(app):
     commands = [
         BotCommand("start", "Главное меню"),
@@ -136,21 +165,19 @@ async def set_commands(app):
 def main():
     app = Application.builder().token(BOT_TOKEN).build()
 
-    # Команды
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("about", about))
 
-    # Кнопки (callback)
     app.add_handler(CallbackQueryHandler(punch, pattern="punch"))
     app.add_handler(CallbackQueryHandler(more, pattern="more"))
     app.add_handler(CallbackQueryHandler(to_instagram, pattern="to_instagram"))
-    app.add_handler(CallbackQueryHandler(prompts, pattern="prompts"))  # НОВЫЙ ОБРАБОТЧИК
+    app.add_handler(CallbackQueryHandler(setup_instagram, pattern="setup_instagram"))
+    app.add_handler(CallbackQueryHandler(prompts, pattern="prompts"))
     app.add_handler(CallbackQueryHandler(to_start, pattern="to_start"))
 
-    # Устанавливаем меню с кнопками при старте
     app.post_init = set_commands
 
-    print("✅ Бот Балда v2.3 запущен!")
+    print("✅ Бот Балда v2.4 запущен!")
     app.run_polling()
 
 if __name__ == "__main__":

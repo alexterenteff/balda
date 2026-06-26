@@ -37,7 +37,6 @@ async def more(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    # Кнопки: ссылка на регистрацию и переход к Инстаграму
     keyboard = [
         [InlineKeyboardButton("📱 Регистрация в Яндексе", url="https://partners-app.yandex.ru/")],
         [InlineKeyboardButton("➡️ Жми сюда после регистрации", callback_data="to_instagram")],
@@ -59,8 +58,11 @@ async def to_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    # Единственная кнопка — вернуться в /start
-    keyboard = [[InlineKeyboardButton("🏠 Вернуться в меню", callback_data="to_start")]]
+    # ДВЕ КНОПКИ: Промты и Вернуться
+    keyboard = [
+        [InlineKeyboardButton("🤖 Промты для ИИ", callback_data="prompts")],
+        [InlineKeyboardButton("🏠 Вернуться в меню", callback_data="to_start")],
+    ]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     text = (
@@ -72,13 +74,36 @@ async def to_instagram(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await query.edit_message_text(text, parse_mode="Markdown", reply_markup=reply_markup)
 
+# --- НОВАЯ ФУНКЦИЯ: ПРОМТЫ ДЛЯ ИИ ---
+async def prompts(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+
+    keyboard = [[InlineKeyboardButton("🏠 Вернуться в меню", callback_data="to_start")]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    text = (
+        "🤖 *Промты для генерации контента*\n\n"
+        "Скопируй и вставь в нейросеть (Midjourney, Runway, Sora):\n\n"
+        "📸 *Для фото:*\n"
+        "`Счастливый курьер с доставкой у ресторана. Вечерний город. Яркий свет. Фотореализм.`\n\n"
+        "🎥 *Для видео:*\n"
+        "`Курьер выходит из ресторана с заказом, улыбается, садится на велосипед. Динамика.`\n\n"
+        "📱 *Для сторис:*\n"
+        "`Человек берёт телефон, на экране приложение доставки. Рука с телефоном, размытый фон.`\n\n"
+        "🔥 *Для рилс:*\n"
+        "`Счастливый клиент получает заказ, курьер улыбается, вокруг летят листья.`\n\n"
+        "👉 Генерируй контент, загружай в Инстаграм и зарабатывай!"
+    )
+
+    await query.edit_message_text(text, parse_mode="Markdown", reply_markup=reply_markup)
+
 # --- КОГДА НАЖАЛИ "Вернуться в меню" ---
 async def to_start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
 
-    user = update.effective_user
-    name = user.first_name
+    name = "Хозяин"
 
     keyboard = [[InlineKeyboardButton("👊 Пинать Балду", callback_data="punch")]]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -119,12 +144,13 @@ def main():
     app.add_handler(CallbackQueryHandler(punch, pattern="punch"))
     app.add_handler(CallbackQueryHandler(more, pattern="more"))
     app.add_handler(CallbackQueryHandler(to_instagram, pattern="to_instagram"))
+    app.add_handler(CallbackQueryHandler(prompts, pattern="prompts"))  # НОВЫЙ ОБРАБОТЧИК
     app.add_handler(CallbackQueryHandler(to_start, pattern="to_start"))
 
     # Устанавливаем меню с кнопками при старте
     app.post_init = set_commands
 
-    print("✅ Бот Балда v2.2 запущен!")
+    print("✅ Бот Балда v2.3 запущен!")
     app.run_polling()
 
 if __name__ == "__main__":
